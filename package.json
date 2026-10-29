@@ -1,0 +1,22 @@
+{
+  "name": "khata-management-system",
+  "version": "2.0.0",
+  "description": "Production-grade credit-ledger and accounting system with multi-product credit invoices and partial payment allocations",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install && npm install --prefix client",
+    "dev": "concurrently -n api,web -c cyan,magenta \"npm:dev:api\" \"npm:dev:client\"",
+    "dev:api": "cd backend && python -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000",
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "cd backend && python -m uvicorn app.main:app --host 127.0.0.1 --port 8000",
+    "test": "cd backend && python -m pytest -q",
+    "test:watch": "cd backend && python -m pytest -q --watch",
+    "migrate": "cd backend && python -m alembic upgrade head"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "author": "Khata Management Engineering",
+  "license": "ISC"
+}

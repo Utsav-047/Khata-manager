@@ -1,22 +1,24 @@
 {
+  "id": "/?source=pwa",
   "short_name": "Khata Manager",
   "name": "Khata Management System",
   "description": "Credit Ledger & Financial Accounting OS - Kisan Krishi Seva Kendra",
   "icons": [
     {
-      "src": "/icon-192.svg",
-      "type": "image/svg+xml",
+      "src": "/icon-192.png",
+      "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.svg",
-      "type": "image/svg+xml",
+      "src": "/icon-512.png",
+      "type": "image/png",
       "sizes": "512x512",
       "purpose": "any maskable"
     }
   ],
-  "start_url": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "background_color": "#0f172a",
   "theme_color": "#059669",
   "display": "standalone",

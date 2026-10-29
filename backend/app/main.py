@@ -19,6 +19,37 @@ from sqlalchemy.orm import Session
 settings_cfg = get_settings()
 
 
+def sync_database_schema(db_engine):
+    """Ensure newly added columns exist in existing databases without manual migration."""
+    from sqlalchemy import inspect, text
+    try:
+        inspector = inspect(db_engine)
+        tables = inspector.get_table_names()
+
+        with db_engine.connect() as conn:
+            if "users" in tables:
+                user_cols = {c["name"] for c in inspector.get_columns("users")}
+                if "phone" not in user_cols:
+                    conn.execute(text("ALTER TABLE users ADD COLUMN phone VARCHAR(20) NULL"))
+                    conn.commit()
+
+            if "products" in tables:
+                prod_cols = {c["name"] for c in inspector.get_columns("products")}
+                if "current_stock" not in prod_cols:
+                    conn.execute(
+                        text("ALTER TABLE products ADD COLUMN current_stock DECIMAL(15, 3) NOT NULL DEFAULT 0.000")
+                    )
+                    conn.commit()
+                if "min_stock_alert" not in prod_cols:
+                    conn.execute(
+                        text("ALTER TABLE products ADD COLUMN min_stock_alert DECIMAL(15, 3) NOT NULL DEFAULT 10.000")
+                    )
+                    conn.commit()
+    except Exception as e:
+        import logging
+        logging.getLogger("uvicorn.error").warning(f"Schema sync non-fatal warning: {e}")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Create all tables and seed default admin + business settings on startup.
@@ -31,6 +62,7 @@ async def lifespan(app: FastAPI):
         return
 
     Base.metadata.create_all(bind=engine)
+    sync_database_schema(engine)
 
     with Session(engine) as db:
         # Seed or update admin user credentials

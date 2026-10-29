@@ -1,12 +1,16 @@
 """Application configuration loaded from .env via pydantic-settings."""
 from functools import lru_cache
+from pathlib import Path
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import field_validator
+
+# Locate root directory .env if present
+ROOT_ENV = Path(__file__).resolve().parent.parent.parent / ".env"
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", "../.env", str(ROOT_ENV)),
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra="ignore",

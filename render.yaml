@@ -20,6 +20,7 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: ADMIN_EMAIL
-        value: "utsavpatel788190@gmail.com"
+        sync: false
       - key: ADMIN_PASSWORD
-        value: "Utsav@8148"
+        sync: false
+

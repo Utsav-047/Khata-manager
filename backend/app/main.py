@@ -65,28 +65,32 @@ async def lifespan(app: FastAPI):
     sync_database_schema(engine)
 
     with Session(engine) as db:
-        # Seed or update admin user credentials
+        # Seed or update admin user credentials from environment or defaults
+        import os
+        admin_email = os.getenv("ADMIN_EMAIL", "utsavpatel788190@gmail.com")
+        admin_password = os.getenv("ADMIN_PASSWORD", "Utsav@8148")
+
         admin = db.query(User).filter(
-            (User.username == "utsavpatel788190@gmail.com")
-            | (User.email == "utsavpatel788190@gmail.com")
+            (User.username == admin_email)
+            | (User.email == admin_email)
             | (User.username == "admin")
         ).first()
 
         if not admin:
             admin = User(
-                username="utsavpatel788190@gmail.com",
+                username=admin_email,
                 full_name="Utsav Patel (Administrator)",
-                email="utsavpatel788190@gmail.com",
-                hashed_password=hash_password("Utsav@8148"),
+                email=admin_email,
+                hashed_password=hash_password(admin_password),
                 role="admin",
                 is_active=True,
             )
             db.add(admin)
         else:
-            admin.username = "utsavpatel788190@gmail.com"
-            admin.email = "utsavpatel788190@gmail.com"
+            admin.username = admin_email
+            admin.email = admin_email
             admin.full_name = "Utsav Patel (Administrator)"
-            admin.hashed_password = hash_password("Utsav@8148")
+            admin.hashed_password = hash_password(admin_password)
             admin.is_active = True
             admin.role = "admin"
         db.commit()

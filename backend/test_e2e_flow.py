@@ -1,3 +1,4 @@
+import os
 import urllib.request
 import json
 
@@ -19,7 +20,9 @@ def get(url, token=None):
 
 def run():
     # 1. Login via Frontend Proxy
-    login = post('http://localhost:5173/api/auth/login', {'username': 'admin', 'password': 'admin123'})
+    test_user = os.getenv("TEST_ADMIN_USER", "admin")
+    test_password = os.getenv("TEST_ADMIN_PASSWORD", "testpass")
+    login = post('http://localhost:5173/api/auth/login', {'username': test_user, 'password': test_password})
     token = login['access_token']
     print(f"1. Logged in successfully: User '{login['username']}', Role '{login['role']}'")
 

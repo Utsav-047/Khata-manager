@@ -6,10 +6,10 @@ services:
     container_name: khata_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-KhataRootSecure2026!}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
       MYSQL_DATABASE: ${DB_NAME:-khata_management}
       MYSQL_USER: ${DB_USER:-khata_user}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-KhataUserPass2026!}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
     volumes:
       - khata_db_data:/var/lib/mysql
     ports:
@@ -33,9 +33,9 @@ services:
       DB_HOST: db
       DB_PORT: 3306
       DB_USER: ${DB_USER:-khata_user}
-      DB_PASSWORD: ${DB_PASSWORD:-KhataUserPass2026!}
+      DB_PASSWORD: ${DB_PASSWORD}
       DB_NAME: ${DB_NAME:-khata_management}
-      SECRET_KEY: ${SECRET_KEY:-generate_with_python_secrets_token_hex_32}
+      SECRET_KEY: ${SECRET_KEY}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-https://yourdomain.com}
       BUSINESS_NAME: "Kisan Krishi Seva Kendra"
       BUSINESS_CURRENCY_SYMBOL: "₹"

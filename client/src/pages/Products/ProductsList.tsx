@@ -149,7 +149,80 @@ export const ProductsList: React.FC = () => {
         />
       ) : (
         <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+          {/* Mobile Cards View (< 768px) */}
+          <div className="block md:hidden divide-y divide-slate-100">
+            {products.map((p) => {
+              const isOutOfStock = p.currentStock <= 0;
+              const isLowStock = !isOutOfStock && p.currentStock <= (p.minStockAlert ?? 10);
+
+              return (
+                <div key={p._id} className="p-4 space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-bold text-slate-900 text-sm">{p.name}</span>
+                        <span className="font-mono text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">
+                          {p.productCode}
+                        </span>
+                      </div>
+                      <span className="text-[11px] text-slate-400 block mt-0.5">
+                        Unit: {p.unit} {p.description && `• ${p.description}`}
+                      </span>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="font-extrabold text-slate-900 text-base block">
+                        {formatINR(p.defaultPriceRupees)}
+                      </span>
+                      <span className="text-[10px] text-slate-400 block">per {p.unit}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                    <div>
+                      {isOutOfStock ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                          Out of Stock (0)
+                        </span>
+                      ) : isLowStock ? (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                          Low: {p.currentStock.toLocaleString()} {p.unit}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          Stock: {p.currentStock.toLocaleString()} {p.unit}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setProductToEdit(p);
+                          setModalOpen(true);
+                        }}
+                        className="inline-flex items-center space-x-1 px-3 py-1 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                      >
+                        <Edit2 className="w-3.5 h-3.5 text-slate-500" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmToggle(p)}
+                        className={`text-xs font-medium px-2 py-1 ${
+                          p.isActive ? 'text-rose-600' : 'text-emerald-600'
+                        }`}
+                      >
+                        {p.isActive ? 'Deactivate' : 'Activate'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table View (>= 768px) */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                 <tr>

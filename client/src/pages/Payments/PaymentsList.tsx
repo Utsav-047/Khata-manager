@@ -179,7 +179,73 @@ export const PaymentsList: React.FC = () => {
         />
       ) : (
         <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+          {/* Mobile Cards View (< 768px) */}
+          <div className="block md:hidden divide-y divide-slate-100">
+            {payments.map((p) => {
+              const customerName = typeof p.customerId === 'object' ? p.customerId?.name : 'Customer';
+
+              return (
+                <div key={p._id} className="p-4 space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-mono font-bold text-slate-900 text-sm">{p.receiptNumber}</span>
+                        <Badge variant="blue">{p.paymentMethod}</Badge>
+                      </div>
+                      <span className="font-semibold text-slate-900 block text-xs mt-1">{customerName}</span>
+                      <span className="text-[11px] text-slate-400">
+                        {formatDate(p.paymentDate)}
+                        {p.referenceNumber && ` • Ref: ${p.referenceNumber}`}
+                      </span>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className="font-extrabold text-emerald-600 text-base block">
+                        +{formatINR(p.amountRupees)}
+                      </span>
+                      {p.unallocatedAmountRupees > 0 && (
+                        <span className="font-medium text-sky-600 text-[10px] block">
+                          Unallocated: {formatINR(p.unallocatedAmountRupees)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      {p.allocatedAmountRupees > 0 ? `Allocated: ${formatINR(p.allocatedAmountRupees)}` : 'Full credit'}
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPayment(p)}
+                        className="inline-flex items-center space-x-1 px-3 py-1 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+                      >
+                        <Eye className="w-3.5 h-3.5 text-slate-500" />
+                        <span>{isGujarati ? 'જુઓ' : 'Receipt'}</span>
+                      </button>
+                      {isAdmin && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setReversalPayment(p);
+                            setReversalReason('');
+                            setReversalError('');
+                          }}
+                          className="p-1 text-rose-600 hover:bg-rose-50 rounded"
+                          title={t('reverseInvoice', 'Reverse Receipt')}
+                        >
+                          <RotateCcw className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table View (>= 768px) */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 text-slate-500 font-semibold border-b border-slate-200">
                 <tr>

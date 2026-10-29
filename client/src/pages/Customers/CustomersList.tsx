@@ -161,7 +161,84 @@ export const CustomersList: React.FC = () => {
         />
       ) : (
         <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
-          <div className="overflow-x-auto">
+          {/* Mobile Cards View (< 768px) */}
+          <div className="block md:hidden divide-y divide-slate-100">
+            {customers.map((c) => {
+              const bal = c.outstandingBalanceRupees || 0;
+              const hasDue = bal > 0;
+              const isAdvance = bal < 0;
+
+              return (
+                <div key={c._id} className="p-4 space-y-2.5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-bold text-slate-900 text-sm">{c.name}</span>
+                        <span className="font-mono text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">
+                          {c.customerCode}
+                        </span>
+                      </div>
+                      {c.mobile && (
+                        <div className="text-xs text-slate-600 font-mono">
+                          📱 {c.mobile}
+                        </div>
+                      )}
+                      {c.address && (
+                        <div className="text-[11px] text-slate-400 truncate max-w-[220px]">
+                          {c.address}
+                        </div>
+                      )}
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span
+                        className={`font-bold text-base block ${
+                          hasDue ? 'text-rose-600' : isAdvance ? 'text-blue-600' : 'text-emerald-600'
+                        }`}
+                      >
+                        {formatINR(Math.abs(bal))}
+                      </span>
+                      <span className="text-[10px] text-slate-400 block">
+                        {hasDue
+                          ? t('balanceDue', 'Balance Due')
+                          : isAdvance
+                          ? t('advanceCredit', 'Advance Credit')
+                          : t('fullySettled', 'Fully Settled')}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-1 border-t border-slate-100/80 text-xs">
+                    <Badge variant={c.isActive ? 'emerald' : 'slate'}>
+                      {c.isActive ? t('active', 'Active') : t('inactive', 'Inactive')}
+                    </Badge>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/customers/${c._id}/ledger`)}
+                        className="inline-flex items-center space-x-1 px-3 py-1 text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-lg transition-colors"
+                      >
+                        <BookOpen className="w-3.5 h-3.5" />
+                        <span>{t('viewLedger', 'Ledger')}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCustomerToEdit(c);
+                          setModalOpen(true);
+                        }}
+                        className="p-1.5 text-slate-400 hover:text-slate-600 rounded"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table View (>= 768px) */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50/80 text-slate-500 font-semibold border-b border-slate-200">
                 <tr>

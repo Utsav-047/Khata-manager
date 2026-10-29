@@ -269,7 +269,56 @@ export const CustomerLedger: React.FC = () => {
             </span>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Mobile Statement Cards View (< 768px) */}
+          <div className="block md:hidden divide-y divide-slate-100">
+            {ledger.map((entry) => {
+              const isDebit = entry.type === 'DEBIT' && entry.debitRupees > 0;
+              const isCredit = entry.type === 'CREDIT' && entry.creditRupees > 0;
+              const isReversed = entry.status === 'REVERSED';
+
+              return (
+                <div
+                  key={entry.srNo}
+                  onClick={() => handleRowClick(entry)}
+                  className={`p-3.5 space-y-2 cursor-pointer ${
+                    isReversed ? 'opacity-60 bg-slate-50 line-through' : 'hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <div className="flex items-center space-x-1.5">
+                        {entry.type === 'DEBIT' && <ArrowUpRight className="w-3.5 h-3.5 text-rose-500 shrink-0" />}
+                        {entry.type === 'CREDIT' && <ArrowDownLeft className="w-3.5 h-3.5 text-emerald-500 shrink-0" />}
+                        <span className="font-mono font-bold text-slate-900 text-xs">{entry.refNumber}</span>
+                        <span className="text-[10px] text-slate-400">#{entry.srNo}</span>
+                      </div>
+                      <span className="text-[11px] text-slate-500 block mt-0.5">
+                        {formatDate(entry.date)} • {entry.type === 'OPENING' ? (isGujarati ? 'શરૂઆતની બાકી રકમ' : 'Opening Balance') : entry.description}
+                      </span>
+                    </div>
+                    <div className="text-right shrink-0">
+                      {isDebit && (
+                        <span className="font-bold text-rose-600 text-xs block">
+                          +{formatINR(entry.debitRupees)}
+                        </span>
+                      )}
+                      {isCredit && (
+                        <span className="font-bold text-emerald-600 text-xs block">
+                          -{formatINR(entry.creditRupees)}
+                        </span>
+                      )}
+                      <span className="text-[10px] text-slate-400 block font-mono">
+                        Bal: {formatINR(entry.runningBalanceRupees)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Desktop Table View (>= 768px) */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-100/75 text-slate-600 font-semibold border-b border-slate-200">
                 <tr>

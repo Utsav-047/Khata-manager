@@ -312,7 +312,7 @@ export const CreateInvoice: React.FC = () => {
             {items.map((item, index) => (
               <div
                 key={index}
-                className="p-3 rounded-lg border border-slate-200 bg-slate-50/50 flex flex-col md:flex-row items-center gap-3"
+                className="p-3 rounded-lg border border-slate-200 bg-slate-50/50 flex flex-col md:flex-row items-stretch md:items-center gap-3"
               >
                 <div className="w-full md:flex-1">
                   <div className="flex items-center justify-between mb-1">
@@ -341,7 +341,7 @@ export const CreateInvoice: React.FC = () => {
                     required
                     value={item.productId}
                     onChange={(e) => handleProductSelect(index, e.target.value)}
-                    className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-md focus:ring-1 focus:ring-emerald-500 bg-white text-slate-900"
+                    className="w-full px-2.5 py-2 text-xs border border-slate-200 rounded-md focus:ring-1 focus:ring-emerald-500 bg-white text-slate-900"
                   >
                     <option value="">{isGujarati ? '-- ઉત્પાદન પસંદ કરો --' : '-- Select Product --'}</option>
                     {products.map((p) => (
@@ -352,56 +352,58 @@ export const CreateInvoice: React.FC = () => {
                   </select>
                 </div>
 
-                <div className="w-full md:w-28">
-                  <label className="block text-[11px] font-medium text-slate-500 mb-1">
-                    {t('quantity', 'Qty')} ({item.unit || 'Unit'}) *
-                  </label>
-                  <input
-                    type="number"
-                    step="any"
-                    min="0"
-                    required
-                    value={item.quantity}
-                    placeholder="1"
-                    onChange={(e) => handleQuantityChange(index, e.target.value)}
-                    className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-md focus:ring-1 focus:ring-emerald-500 text-slate-900 font-semibold"
-                  />
-                  {(() => {
-                    const selProd = products.find((p) => p._id === item.productId);
-                    const qtyNum = typeof item.quantity === 'number' ? item.quantity : (parseFloat(item.quantity) || 0);
-                    if (selProd && qtyNum > selProd.currentStock) {
-                      return (
-                        <span className="text-[10px] text-rose-600 block mt-0.5 font-medium">
-                          Exceeds stock ({selProd.currentStock})
-                        </span>
-                      );
-                    }
-                    return null;
-                  })()}
+                <div className="grid grid-cols-2 md:flex items-center gap-3 w-full md:w-auto">
+                  <div className="w-full md:w-28">
+                    <label className="block text-[11px] font-medium text-slate-500 mb-1">
+                      {t('quantity', 'Qty')} ({item.unit || 'Unit'}) *
+                    </label>
+                    <input
+                      type="number"
+                      step="any"
+                      min="0"
+                      required
+                      value={item.quantity}
+                      placeholder="1"
+                      onChange={(e) => handleQuantityChange(index, e.target.value)}
+                      className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-md focus:ring-1 focus:ring-emerald-500 text-slate-900 font-semibold"
+                    />
+                    {(() => {
+                      const selProd = products.find((p) => p._id === item.productId);
+                      const qtyNum = typeof item.quantity === 'number' ? item.quantity : (parseFloat(item.quantity) || 0);
+                      if (selProd && qtyNum > selProd.currentStock) {
+                        return (
+                          <span className="text-[10px] text-rose-600 block mt-0.5 font-medium">
+                            Exceeds stock ({selProd.currentStock})
+                          </span>
+                        );
+                      }
+                      return null;
+                    })()}
+                  </div>
+
+                  <div className="w-full md:w-32">
+                    <label className="block text-[11px] font-medium text-slate-500 mb-1">{t('unitPrice', 'Rate (₹)')} *</label>
+                    <input
+                      type="number"
+                      step="any"
+                      min="0"
+                      required
+                      value={item.unitPrice}
+                      placeholder="0.00"
+                      onChange={(e) => handlePriceChange(index, e.target.value)}
+                      className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-md focus:ring-1 focus:ring-emerald-500 text-slate-900"
+                    />
+                  </div>
                 </div>
 
-                <div className="w-full md:w-32">
-                  <label className="block text-[11px] font-medium text-slate-500 mb-1">{t('unitPrice', 'Rate (₹)')} *</label>
-                  <input
-                    type="number"
-                    step="any"
-                    min="0"
-                    required
-                    value={item.unitPrice}
-                    placeholder="0.00"
-                    onChange={(e) => handlePriceChange(index, e.target.value)}
-                    className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-md focus:ring-1 focus:ring-emerald-500 text-slate-900"
-                  />
-                </div>
-
-                <div className="w-full md:w-36 text-right">
-                  <label className="block text-[11px] font-medium text-slate-500 mb-1">{t('lineTotal', 'Line Total')}</label>
+                <div className="w-full md:w-36 flex items-center justify-between md:block md:text-right pt-2 md:pt-0 border-t md:border-t-0 border-slate-200/60">
+                  <label className="block text-[11px] font-medium text-slate-500 md:mb-1">{t('lineTotal', 'Line Total')}</label>
                   <div className="text-sm font-extrabold text-slate-900 py-1 font-mono">
                     {formatINR(item.lineTotal)}
                   </div>
                 </div>
 
-                <div className="self-end md:self-center pt-2 md:pt-4">
+                <div className="self-end md:self-center pt-1 md:pt-4">
                   <button
                     type="button"
                     onClick={() => removeLineItem(index)}

@@ -383,8 +383,8 @@ export const RecordPayment: React.FC = () => {
                     : 'No unpaid invoices found for this customer. Any amount recorded will remain as an unallocated credit on their Khata.'}
                 </div>
               ) : (
-                <div className="border border-slate-200 rounded-lg overflow-hidden">
-                  <table className="w-full text-xs text-left">
+                <div className="border border-slate-200 rounded-lg overflow-x-auto">
+                  <table className="w-full text-xs text-left min-w-[500px]">
                     <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
                       <tr>
                         <th className="py-2.5 px-3">{t('invoiceNo', 'Invoice No')}</th>

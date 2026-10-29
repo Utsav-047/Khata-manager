@@ -93,7 +93,61 @@ export const StaffList: React.FC = () => {
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+        {/* Mobile Cards View (< 768px) */}
+        <div className="block md:hidden divide-y divide-slate-100">
+          {users.map((u: any) => (
+            <div key={u._id || u.id} className="p-4 space-y-2.5">
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="font-bold text-slate-900 text-sm">{u.name}</span>
+                    <Badge variant={u.role === 'admin' ? 'indigo' : 'slate'}>
+                      {u.role === 'admin' ? 'Admin' : 'Staff'}
+                    </Badge>
+                  </div>
+                  <span className="font-mono text-xs text-slate-500 block mt-0.5">@{u.username}</span>
+                  {u.phone && <div className="text-xs text-slate-600 font-mono mt-0.5">📱 {u.phone}</div>}
+                  {u.email && <div className="text-[11px] text-slate-400">{u.email}</div>}
+                </div>
+                <div className="text-right">
+                  <Badge variant={u.isActive ? 'emerald' : 'rose'}>
+                    {u.isActive ? 'Active' : 'Deactivated'}
+                  </Badge>
+                </div>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                <span className="text-[11px] text-slate-400">
+                  Last login: {formatDateTime(u.lastLoginAt) || 'Never'}
+                </span>
+                <div className="flex items-center space-x-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setUserToEdit(u);
+                      setModalOpen(true);
+                    }}
+                    className="inline-flex items-center space-x-1 text-slate-600 hover:text-slate-900 font-medium"
+                  >
+                    <Edit2 className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmToggle(u)}
+                    className={`font-medium ${
+                      u.isActive ? 'text-rose-600' : 'text-emerald-600'
+                    }`}
+                  >
+                    {u.isActive ? 'Deactivate' : 'Activate'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Table View (>= 768px) */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 text-slate-600 font-semibold border-b border-slate-200">
               <tr>

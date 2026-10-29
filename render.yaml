@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: khata-management
+    runtime: docker
+    plan: free
+    region: singapore
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        value: "khata_management"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: "utsavpatel788190@gmail.com"
+      - key: ADMIN_PASSWORD
+        value: "Utsav@8148"

@@ -5,8 +5,13 @@ from app.config import get_settings
 
 settings = get_settings()
 
+connect_args = {}
+if settings.db_ssl or "tidbcloud.com" in settings.db_host.lower():
+    connect_args["ssl"] = {"ssl_mode": "REQUIRED"}
+
 engine = create_engine(
     settings.database_url,
+    connect_args=connect_args,
     pool_pre_ping=True,          # detect stale connections
     pool_recycle=3600,           # recycle connections hourly
     pool_size=10,

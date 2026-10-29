@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     db_user: str = "root"
     db_password: str = ""
     db_name: str = "khata_management"
+    db_ssl: bool = False
 
     # Security
     secret_key: str = "changeme"

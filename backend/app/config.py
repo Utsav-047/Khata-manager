@@ -40,9 +40,17 @@ class Settings(BaseSettings):
 
     @property
     def database_url(self) -> str:
-        pw = f":{self.db_password}" if self.db_password else ""
+        import os
+        from urllib.parse import quote_plus
+        raw_url = os.getenv("DATABASE_URL")
+        if raw_url:
+            if raw_url.startswith("mysql://"):
+                raw_url = "mysql+pymysql://" + raw_url[len("mysql://"):]
+            return raw_url
+        user = quote_plus(self.db_user)
+        pw = f":{quote_plus(self.db_password)}" if self.db_password else ""
         return (
-            f"mysql+pymysql://{self.db_user}{pw}@{self.db_host}:{self.db_port}"
+            f"mysql+pymysql://{user}{pw}@{self.db_host}:{self.db_port}"
             f"/{self.db_name}?charset=utf8mb4"
         )
 

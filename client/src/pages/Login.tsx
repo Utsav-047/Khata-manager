@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Lock, User, ArrowRight, ShieldCheck, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Lock, User, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export const Login: React.FC = () => {
@@ -26,11 +26,6 @@ export const Login: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fillCredentials = (u: string, p: string) => {
-    setUsername(u);
-    setPassword(p);
   };
 
   return (
@@ -127,31 +122,6 @@ export const Login: React.FC = () => {
               {!loading && <ArrowRight className="w-4 h-4" />}
             </button>
           </form>
-
-          {/* Quick Demo Credentials */}
-          <div className="mt-6 pt-5 border-t border-slate-100 text-center">
-            <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider block mb-2">
-              Quick Test Credentials
-            </span>
-            <div className="flex justify-center space-x-2">
-              <button
-                type="button"
-                onClick={() => fillCredentials('utsavpatel788190@gmail.com', 'Utsav@8148')}
-                className="px-2.5 py-1 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-1"
-              >
-                <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                <span>Admin Login</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => fillCredentials('staff1', 'Staff@123456')}
-                className="px-2.5 py-1 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-md transition-colors flex items-center space-x-1"
-              >
-                <User className="w-3 h-3 text-sky-600" />
-                <span>Staff Login</span>
-              </button>
-            </div>
-          </div>
         </div>
       </div>
     </div>

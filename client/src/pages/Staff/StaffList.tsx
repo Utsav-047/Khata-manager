@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Plus, UserCheck, Edit2, Lock } from 'lucide-react';
+import { ShieldCheck, Plus, UserCheck, Edit2, Lock, Download } from 'lucide-react';
 import { userService } from '../../services/userService';
 import { User } from '../../types';
 import { StaffFormModal } from './StaffFormModal';
 import { Badge } from '../../components/Badge';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { formatDateTime } from '../../utils/formatters';
+import { exportToCSV } from '../../utils/exportHelper';
 
 export const StaffList: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -45,6 +46,20 @@ export const StaffList: React.FC = () => {
     }
   };
 
+  const handleExportCSV = () => {
+    const headers = ['Staff Name', 'Username', 'Mobile Number', 'Email Address', 'Role', 'Status', 'Last Login'];
+    const rows = users.map((u: any) => [
+      u.name,
+      u.username,
+      u.phone || '',
+      u.email || '',
+      u.role === 'admin' ? 'Administrator' : 'Counter Staff',
+      u.isActive ? 'Active' : 'Deactivated',
+      formatDateTime(u.lastLoginAt) || 'Never',
+    ]);
+    exportToCSV(`staff_accounts_${new Date().toISOString().slice(0, 10)}`, headers, rows);
+  };
+
   return (
     <div className="space-y-5">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -54,17 +69,27 @@ export const StaffList: React.FC = () => {
             Manage multiple counter staff, access credentials, and administrative permissions.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            setUserToEdit(null);
-            setModalOpen(true);
-          }}
-          className="inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add Staff Member</span>
-        </button>
+        <div className="flex items-center space-x-2">
+          <button
+            type="button"
+            onClick={handleExportCSV}
+            className="inline-flex items-center space-x-1.5 px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg shadow-xs transition-colors"
+          >
+            <Download className="w-3.5 h-3.5 text-slate-500" />
+            <span>Export CSV</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setUserToEdit(null);
+              setModalOpen(true);
+            }}
+            className="inline-flex items-center space-x-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Staff Member</span>
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl border border-slate-200/80 shadow-sm overflow-hidden">
